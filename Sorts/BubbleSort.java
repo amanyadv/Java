@@ -1,70 +1,55 @@
+package Sorts;
+
+import static Sorts.SortUtils.*;
+
 /**
  *
  * @author Varun Upadhyay (https://github.com/varunu28)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
  *
+ * @see SortAlgorithm
  */
 
-class BubbleSort
-{
+class BubbleSort implements SortAlgorithm {
     /**
      * This method implements the Generic Bubble Sort
      *
      * @param array The array to be sorted
-     * @param last The count of total number of elements in array
      * Sorts the array in increasing order
      **/
 
-    public static <T extends Comparable<T>> void BS(T array[], int last) {
+    @Override
+    public  <T extends Comparable<T>> T[] sort(T array[]) {
+        int last = array.length;
         //Sorting
         boolean swap;
-        do
-        {
+        do {
             swap = false;
-            for (int count = 0; count < last-1; count++)
-            {
-                int comp = array[count].compareTo(array[count + 1]);
-                if (comp > 0)
-                {
-                    T temp = array[count];
-                    array[count] = array[count + 1];
-                    array[count + 1] = temp;
-                    swap = true;
+            for (int count = 0; count < last-1; count++) {
+                if (less(array[count], array[count + 1])) {
+                    swap = swap(array, count, count + 1);
                 }
             }
             last--;
         } while (swap);
+        return array;
     }
 
     // Driver Program
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
+
         // Integer Input
-        int[] arr1 = {4,23,6,78,1,54,231,9,12};
-        int last = arr1.length;
-        Integer[] array = new Integer[last];
-        for (int i=0;i<last;i++) {
-            array[i] = arr1[i];
-        }
+        Integer[] integers = {4, 23, 6, 78, 1, 54, 231, 9, 12};
+        BubbleSort bubbleSort = new BubbleSort();
+        bubbleSort.sort(integers);
 
-        BS(array, last);
-
-        // Output => 1	  4	 6	9	12	23	54	78	231
-        for(int i=0; i<last; i++)
-        {
-            System.out.print(array[i]+"\t");
-        }
-        System.out.println();
+        // Output => 231, 78, 54, 23, 12, 9, 6, 4, 1
+        print(integers);
 
         // String Input
-        String[] array1 = {"c", "a", "e", "b","d"};
-        last = array1.length;
+        String[] strings = {"c", "a", "e", "b","d"};
+        //Output => e, d, c, b, a
+        print(bubbleSort.sort(strings));
 
-        BS(array1, last);
-
-        //Output => a	  b	 c	d	e
-        for(int i=0; i<last; i++)
-        {
-            System.out.print(array1[i]+"\t");
-        }
     }
 }

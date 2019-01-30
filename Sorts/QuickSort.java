@@ -1,25 +1,48 @@
+package Sorts;
+
+import static Sorts.SortUtils.*;
+
 /**
  *
  * @author Varun Upadhyay (https://github.com/varunu28)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ *
+ *
+ * @see SortAlgorithm
  *
  */
+class QuickSort implements SortAlgorithm {
 
-class QuickSort {
+
 
     /**
      * This method implements the Generic Quick Sort
      *
      * @param array The array to be sorted
-     * @param start The first index of an array
-     * @param end The last index of an array
      * Sorts the array in increasing order
      **/
 
-    public static <T extends Comparable<T>> void QS(T array[], int start, int end) {
-        if (start < end) {
-            int PIndex = partition(array, start, end);
-            QS(array, start, PIndex - 1);
-            QS(array, PIndex + 1, end);
+    @Override
+    public <T extends Comparable<T>> T[] sort(T[] array) {
+        doSort(array, 0, array.length - 1);
+        return array;
+    }
+
+
+    /**
+     * The sorting process
+     *
+     * @param left The first index of an array
+     * @param right The last index of an array
+     * @param array The array to be sorted
+     *
+     **/
+
+    private static <T extends Comparable<T>> void doSort(T[] array, int left, int right) {
+        if (left < right) {
+            int pivot = partition(array, left, right);
+            doSort(array, left, pivot - 1);
+            doSort(array, pivot , right);
         }
     }
 
@@ -27,67 +50,48 @@ class QuickSort {
      * This method finds the partition index for an array
      *
      * @param array The array to be sorted
-     * @param start The first index of an array
-     * @param end The last index of an array
+     * @param left The first index of an array
+     * @param right The last index of an array
      * Finds the partition index of an array
      **/
 
-    public static <T extends Comparable<T>> int partition(T array[], int start, int end) {
-        T pivot = array[end];
-        int PIndex = start;
-        for (int i=start;i<end;i++) {
-            if (array[i].compareTo(pivot) <= 0) {
-                swap(array, i, PIndex);
-                PIndex++;
+    private static <T extends Comparable<T>> int partition(T[] array, int left, int right) {
+        int mid = (left + right) / 2;
+        T pivot = array[mid];
+
+        while(left <= right) {
+            while(less(array[left], pivot)){
+                ++left;
+            }
+            while(less(pivot, array[right])) {
+                --right;
+            }
+            if(left <= right) {
+                swap(array, left, right);
+                ++left;
+                --right;
             }
         }
-        swap(array, PIndex, end);
-        return PIndex;
-    }
-
-    /**
-     * This method swaps two elements of an array
-     *
-     * @param array The array to be sorted
-     * @param initial The first element
-     * @param fin The second element
-     * Swaps initial and fin element
-     **/
-
-    public static <T extends Comparable<T>> void swap(T[] array, int initial, int fin) {
-        T temp = array[initial];
-        array[initial] = array[fin];
-        array[fin] = temp;
+        return left;
     }
 
     // Driver Program
     public static void main(String[] args) {
 
         // For integer input
-        int[] arr = {3,4,1,32,0,2,44,111,5};
-        Integer[] array = new Integer[arr.length];
-        for (int i=0;i<arr.length;i++) {
-            array[i] = arr[i];
-        }
+        Integer[] array =  {3, 4, 1, 32, 0, 1, 5, 12 ,2, 5 ,7 ,8 ,9, 2, 44, 111, 5};
 
-        QS(array, 0, arr.length-1);
+        QuickSort quickSort = new QuickSort();
+       // quickSort.sort(array);
 
-        //Output => 0 1 2 3 4 5 32 44 111
-        for (int i=0;i<array.length;i++) {
-            System.out.print(array[i] + " ");
-        }
-        System.out.println();
+        //Output => 0 1 1 2 2 3 4 5 5 5 7 8 9 12 32 44 111
+        print(array);
 
-        // String Input
-        String[] array1 = {"c", "a", "e", "b","d"};
-
-        QS(array1, 0,array1.length-1);
+        String[] stringArray =  {"c", "a", "e", "b", "d"};
+        quickSort.sort(stringArray);
 
         //Output => a	b	c	d	e
-        for(int i=0; i<array1.length; i++)
-        {
-            System.out.print(array1[i]+"\t");
-        }
+        print(stringArray);
     }
 }
 

@@ -2,16 +2,22 @@ package Sorts;
 
 import java.util.Random;
 
-public class BogoSort {
-    private static <T> void swap(T array[], int first, int second){
-        T randomElement = array[first];
-        array[first] = array[second];
-        array[second] = randomElement;
-    }
+
+/**
+ *
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ *
+ * @see SortAlgorithm
+ *
+ */
+public class BogoSort implements SortAlgorithm {
+
+    private static final Random random = new Random();
+
 
     private static <T extends Comparable<T>> boolean isSorted(T array[]){
-        for(int i = 0; i<array.length-1; i++){
-            if(array[i].compareTo(array[i+1]) > 0) return false;
+        for(int i = 0; i<array.length - 1; i++){
+            if(SortUtils.less(array[i + 1], array[i])) return false;
         }
         return true;
     }
@@ -19,50 +25,33 @@ public class BogoSort {
     // Randomly shuffles the array
     private static <T> void nextPermutation(T array[]){
         int length = array.length;
-        Random random = new Random();
 
         for (int i = 0; i < array.length; i++) {
             int randomIndex = i + random.nextInt(length - i);
-            swap(array, randomIndex, i);
+            SortUtils.swap(array, randomIndex, i);
         }
     }
 
-    public static <T extends Comparable<T>> void bogoSort(T array[]) {
+    public <T extends Comparable<T>> T[] sort(T array[]) {
         while(!isSorted(array)){
             nextPermutation(array);
         }
+        return array;
     }
 
     // Driver Program
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         // Integer Input
-        int[] arr1 = {4,23,6,78,1,54,231,9,12};
-        int last = arr1.length;
-        Integer[] array = new Integer[last];
-        for (int i=0;i<last;i++) {
-            array[i] = arr1[i];
-        }
+        Integer[] integers = {4, 23, 6, 78, 1, 54, 231, 9, 12};
 
-        bogoSort(array);
+        BogoSort bogoSort = new BogoSort();
 
-        // Output => 1	  4	 6	9	12	23	54	78	231
-        for(int i=0; i<last; i++)
-        {
-            System.out.print(array[i]+"\t");
-        }
-        System.out.println();
+        // print a sorted array
+        SortUtils.print(bogoSort.sort(integers));
 
         // String Input
-        String[] array1 = {"c", "a", "e", "b","d"};
-        last = array1.length;
+        String[] strings = {"c", "a", "e", "b","d"};
 
-        bogoSort(array1);
-
-        //Output => a	  b	 c	d	e
-        for(int i=0; i<last; i++)
-        {
-            System.out.print(array1[i]+"\t");
-        }
+        SortUtils.print(bogoSort.sort(strings));
     }
 }

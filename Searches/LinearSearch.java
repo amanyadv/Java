@@ -1,61 +1,28 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+package Searches;
+
+import java.util.Random;
+import java.util.stream.Stream;
 
 /**
+ * Linear search is the easiest search algorithm
+ * It works with sorted and unsorted arrays (an binary search works only with sorted array)
+ * This algorithm just compares all elements of an array to find a value
+ *
+ * Worst-case performance	O(n)
+ * Best-case performance	O(1)
+ * Average performance	O(n)
+ * Worst-case space complexity
+ *
  *
  * @author Varun Upadhyay (https://github.com/varunu28)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
  *
+ *
+ * @see BinarySearch
+ * @see SearchAlgorithm
  */
 
-public class LinearSearch{
-    /**
-     * The main method
-     * @param args Command line arguments
-     */
-    public static void main(String[] args) throws Exception {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        // Test for Integer inputs
-        Integer[] myArray;
-        int size = 0;
-
-        //Prompt user to create array and its elements
-        System.out.print("Enter the array size: ");
-        size = Integer.parseInt(br.readLine());
-        myArray = new Integer[size];
-        for (int i = 0; i < size; i++){
-            System.out.print("For index " + i + ", enter an integer: ");
-            myArray[i] = Integer.parseInt(br.readLine());
-        }
-
-        //Prompt user to search for particular element
-        System.out.print("Enter integer to search for: ");
-        Integer key = Integer.parseInt(br.readLine());
-
-        //Output array and index of target element, if found
-        System.out.printf("The integer %d is found in index %d\n", key, linearSearch(myArray, key));
-
-        // Test for String inputs
-        String[] myArray1;
-        int size1 = 0;
-
-        //Prompt user to create array and its elements
-        System.out.print("Enter the array size: ");
-        size1 = Integer.parseInt(br.readLine());
-        myArray1 = new String[size];
-        for (int i = 0; i < size1; i++){
-            System.out.print("For index " + i + ", enter a String: ");
-            myArray1[i] = br.readLine();
-        }
-
-        //Prompt user to search for particular element
-        System.out.print("Enter String to search for: ");
-        String key1 = br.readLine();
-
-        //Output array and index of target element, if found
-        System.out.printf("The string %s is found in index %d\n", key1, linearSearch(myArray1, key1));
-    }
+public class LinearSearch implements SearchAlgorithm {
 
     /**
      * Generic Linear search method
@@ -64,14 +31,33 @@ public class LinearSearch{
      * @param value Key being searched for
      * @return Location of the key
      */
-    public static <T extends Comparable<T>> int linearSearch(T[] array, T value) {
-        int lo = 0;
-        int hi = array.length - 1;
-        for (int i = lo; i <= hi; i++) {
+    @Override
+    public <T extends Comparable<T>> int find(T[] array, T value) {
+        for (int i = 0; i < array.length ; i++) {
             if (array[i].compareTo(value) == 0) {
                 return i;
             }
         }
         return -1;
     }
+
+
+    public static void main(String[] args) {
+        //just generate data
+        Random r = new Random();
+        int size = 200;
+        int maxElement = 100;
+        Integer[] integers = Stream.generate(() -> r.nextInt(maxElement)).limit(size).toArray(Integer[]::new);
+
+
+        //the element that should be found
+        Integer shouldBeFound = integers[r.nextInt(size - 1)];
+
+        LinearSearch search = new LinearSearch();
+        int atIndex = search.find(integers, shouldBeFound);
+
+        System.out.println(String.format("Should be found: %d. Found %d at index %d. An array length %d"
+                , shouldBeFound, integers[atIndex], atIndex, size));
+    }
+
 }

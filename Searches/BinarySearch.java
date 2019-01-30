@@ -1,71 +1,96 @@
-import java.util.Scanner;
+package Searches;
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom
+import java.util.stream.IntStream;
+
+import static java.lang.String.format;
 
 /**
  *
+ *
+ *
+ * Binary search is one of the most popular algorithms
+ * The algorithm finds the position of a target value within a sorted array
+ *
+ * Worst-case performance	O(log n)
+ * Best-case performance	O(1)
+ * Average performance	O(log n)
+ * Worst-case space complexity	O(1)
+ *
+ *
  * @author Varun Upadhyay (https://github.com/varunu28)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ *
+ * @see SearchAlgorithm
+ * @see IterativeBinarySearch
  *
  */
 
-class BinarySearch
-{
+class BinarySearch implements SearchAlgorithm {
+
+    /**
+     *
+     * @param array is an array where the element should be found
+     * @param key is an element which should be found
+     * @param <T> is any comparable type
+     * @return index of the element
+     */
+    @Override
+    public  <T extends Comparable<T>> int find(T array[], T key) {
+        return search(array, key, 0, array.length);
+    }
+
     /**
      * This method implements the Generic Binary Search
      *
      * @param array The array to make the binary search
      * @param key The number you are looking for
-     * @param lb The lower bound
-     * @param ub The  upper bound
+     * @param left The lower bound
+     * @param right The  upper bound
      * @return the location of the key
      **/
+    private <T extends Comparable<T>> int search(T array[], T key, int left, int right){
+        if (right < left) return -1; // this means that the key not found
 
-    public static <T extends Comparable<T>> int BS(T array[], T key, int lb, int ub)
-    {
-        if ( lb > ub)
-            return -1;
+        // find median
+        int median = (left + right) >>> 1;
+        int comp = key.compareTo(array[median]);
 
-        int mid = (ub+lb) >>> 1;
-        int comp = key.compareTo(array[mid]);
+        if (comp < 0) {
+            return search(array, key, left, median - 1);
+        }
 
-        if (comp < 0)
-            return (BS(array, key, lb, mid-1));
+        if (comp > 0) {
+            return search(array, key, median + 1, right);
+        }
 
-        if (comp > 0)
-            return (BS(array, key, mid + 1, ub));
-
-        return mid;
+        return median;
     }
 
     // Driver Program
-    public static void main(String[] args)
-    {
-        Scanner input=new Scanner(System.in);
+    public static void main(String[] args) {
+        // Just generate data
+        Random r = ThreadLocalRandom.current();
+        
+        int size = 100;
+        int maxElement = 100000;
+        
+        int[] integers = IntStream.generate(() -> r.nextInt(maxElement)).limit(size).sorted().toArray();
 
-        // For INTEGER Input
-        Integer[] array = new Integer[10];
-        int key = 5;
+        // The element that should be found
+        int shouldBeFound = integers[r.nextInt(size - 1)];
 
-        for (int i = 0; i < 10 ; i++ )
-            array[i] = i+1;
+        BinarySearch search = new BinarySearch();
+        int atIndex = search.find(integers, shouldBeFound);
 
-        int index = BS(array, key, 0, 9);
+        System.out.println(format(
+            "Should be found: %d. Found %d at index %d. An array length %d",
+            shouldBeFound, integers[atIndex], atIndex, size
+        ));
 
-        if (index != -1)
-            System.out.println("Number " +  key + " found at index number : " + index);
-        else
-            System.out.println("Not found");
-
-
-        // For STRING Input
-        String[] array1 = {"a", "b", "c", "d", "e"};
-        String key1 = "d";
-
-        int index1 = BS(array1, key1, 0, array1.length-1);
-
-        if (index1 != -1)
-            System.out.println("String " + key1 + " found at index number : " + index1);
-        else
-            System.out.println("Not found");
-
-        input.close();
+        int toCheck = Arrays.binarySearch(integers, shouldBeFound);
+        System.out.println(format("Found by system method at an index: %d. Is equal: %b", toCheck, toCheck == atIndex));
     }
 }
