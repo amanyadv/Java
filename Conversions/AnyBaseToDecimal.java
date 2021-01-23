@@ -1,59 +1,51 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+package Conversions;
 
-/**
- *
- * @author Varun Upadhyay (https://github.com/varunu28)
- *
- */
+/** @author Varun Upadhyay (https://github.com/varunu28) */
 
 // Driver program
 public class AnyBaseToDecimal {
-    public static void main (String[] args) throws Exception{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
-        String inp = br.readLine();
-        int base =  Integer.parseInt(br.readLine());
+  public static void main(String[] args) {
+    assert convertToDecimal("1010", 2) == Integer.valueOf("1010", 2);
+    assert convertToDecimal("777", 8) == Integer.valueOf("777", 8);
+    assert convertToDecimal("999", 10) == Integer.valueOf("999", 10);
+    assert convertToDecimal("ABCDEF", 16) == Integer.valueOf("ABCDEF", 16);
+    assert convertToDecimal("XYZ", 36) == Integer.valueOf("XYZ", 36);
+  }
 
-        System.out.println("Input in base " + base + " is: " + inp);
-        System.out.println("Decimal value of " + inp + " is: " + convertToDecimal(inp, base));
+  /**
+   * Convert any radix to decimal number
+   *
+   * @param s the string to be convert
+   * @param radix the radix
+   * @return decimal of bits
+   * @throws NumberFormatException if {@code bits} or {@code radix} is invalid
+   */
+  public static int convertToDecimal(String s, int radix) {
+    int num = 0;
+    int pow = 1;
 
-        br.close();
+    for (int i = s.length() - 1; i >= 0; i--) {
+      int digit = valOfChar(s.charAt(i));
+      if (digit >= radix) {
+        throw new NumberFormatException("For input string " + s);
+      }
+      num += valOfChar(s.charAt(i)) * pow;
+      pow *= radix;
     }
+    return num;
+  }
 
-    /**
-     * This method produces a decimal value of any given input number of any base
-     * @param inp_num String of which we need the decimal value and base in integer format
-     * @return string format of the decimal value
-     */
-
-    public static String convertToDecimal(String inp_num, int base) {
-        int len = inp_num.length();
-        int num = 0;
-        int pow = 1;
-
-        for (int i=len-1; i>=0; i--) {
-            if (valOfChar(inp_num.charAt(i)) >= base) {
-                return "Invalid Number";
-            }
-            num += valOfChar(inp_num.charAt(i))*pow;
-            pow *= base;
-        }
-        return String.valueOf(num);
+  /**
+   * Convert character to integer
+   *
+   * @param c the character
+   * @return represented digit of given character
+   * @throws NumberFormatException if {@code ch} is not UpperCase or Digit character.
+   */
+  public static int valOfChar(char c) {
+    if (!(Character.isUpperCase(c) || Character.isDigit(c))) {
+      throw new NumberFormatException("invalid character :" + c);
     }
-
-    /**
-     * This method produces integer value of the input character and returns it
-     * @param c Char of which we need the integer value of
-     * @return integer value of input char
-     */
-
-    public static int valOfChar(char c) {
-        if (c >= '0' && c <= '9') {
-            return (int)c - '0';
-        }
-        else {
-            return (int)c - 'A' + 10;
-        }
-    }
+    return Character.isDigit(c) ? c - '0' : c - 'A' + 10;
+  }
 }
